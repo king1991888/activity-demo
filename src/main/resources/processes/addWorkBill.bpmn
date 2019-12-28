@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1552313432098" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <process id="addWorkBill" isClosed="false" isExecutable="true" name="加班流程" processType="None">
+    <startEvent id="_2" name="StartEvent"/>
+    <endEvent id="_3" name="EndEvent"/>
+    <userTask activiti:assignee="${creator}" activiti:exclusive="true" id="creator" name="提交人"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="isManager" name="经理是否同意"/>
+    <sequenceFlow id="_12" name="managerFalse" sourceRef="isManager" targetRef="creator">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isManager==0}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway gatewayDirection="Unspecified" id="领导是否同意" name="isLeader"/>
+    <userTask activiti:candidateUsers="${bosses}" activiti:exclusive="true" id="boss" name="老板">
+      <extensionElements>
+        <activiti:taskListener event="create"/>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="_20" name="leaderFalse" sourceRef="领导是否同意" targetRef="creator">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isLeader==0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_21" name="leaderTrue" sourceRef="领导是否同意" targetRef="boss">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isLeader==1}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway gatewayDirection="Unspecified" id="isBoss" name="领导是否同意"/>
+    <sequenceFlow id="_23" sourceRef="boss" targetRef="isBoss"/>
+    <sequenceFlow id="_24" name="bossTrue" sourceRef="isBoss" targetRef="_3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isBoss==1}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_25" name="bossFlase" sourceRef="isBoss" targetRef="creator">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isBoss==0}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask activiti:assignee="${managers}" activiti:exclusive="true" id="manager" name="主管">
+      <multiInstanceLoopCharacteristics activiti:collection="${managerList}" activiti:elementVariable="managers" isSequential="true"/>
+    </userTask>
+    <userTask activiti:assignee="${leaders}" activiti:exclusive="true" id="leaer" name="领导">
+      <multiInstanceLoopCharacteristics activiti:collection="${leaderList}" activiti:elementVariable="leaders" isSequential="false"/>
+    </userTask>
+    <sequenceFlow id="_7" sourceRef="_2" targetRef="manager"/>
+    <sequenceFlow id="_8" sourceRef="creator" targetRef="manager"/>
+    <sequenceFlow id="_9" sourceRef="manager" targetRef="isManager"/>
+    <sequenceFlow id="_10" name="managerTrue" sourceRef="isManager" targetRef="leaer">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[#{isManager==1}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_11" sourceRef="leaer" targetRef="领导是否同意"/>
+  </process>
+  <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="addWorkBill">
+      <bpmndi:BPMNShape bpmnElement="_2" id="Shape-_2">
+        <omgdc:Bounds height="32.0" width="32.0" x="350.0" y="5.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" id="Shape-_3">
+        <omgdc:Bounds height="32.0" width="32.0" x="350.0" y="760.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="creator" id="Shape-creator">
+        <omgdc:Bounds height="55.0" width="85.0" x="575.0" y="80.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isManager" id="Shape-isManager" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="515.0" y="205.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="领导是否同意" id="Shape-领导是否同意" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="510.0" y="420.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boss" id="Shape-boss">
+        <omgdc:Bounds height="55.0" width="85.0" x="330.0" y="550.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="isBoss" id="Shape-isBoss" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="505.0" y="635.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="manager" id="Shape-manager">
+        <omgdc:Bounds height="55.0" width="85.0" x="315.0" y="160.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="leaer" id="Shape-leaer">
+        <omgdc:Bounds height="55.0" width="85.0" x="305.0" y="325.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_24" id="BPMNEdge__24" sourceElement="isBoss" targetElement="_3">
+        <omgdi:waypoint x="525.0" y="663.0"/>
+        <omgdi:waypoint x="525.0" y="725.0"/>
+        <omgdi:waypoint x="382.0" y="776.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-56.0" width="55.0" x="0.0" y="40.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12" id="BPMNEdge__12" sourceElement="isManager" targetElement="creator">
+        <omgdi:waypoint x="547.0" y="221.0"/>
+        <omgdi:waypoint x="625.0" y="165.0"/>
+        <omgdi:waypoint x="625.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_23" id="BPMNEdge__23" sourceElement="boss" targetElement="isBoss">
+        <omgdi:waypoint x="365.0" y="605.0"/>
+        <omgdi:waypoint x="365.0" y="655.0"/>
+        <omgdi:waypoint x="509.0" y="655.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_25" id="BPMNEdge__25" sourceElement="isBoss" targetElement="creator">
+        <omgdi:waypoint x="537.0" y="651.0"/>
+        <omgdi:waypoint x="625.0" y="385.0"/>
+        <omgdi:waypoint x="625.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="83.0" width="0.0" x="0.0" y="5.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7" sourceElement="_2" targetElement="_5">
+        <omgdi:waypoint x="366.0" y="37.0"/>
+        <omgdi:waypoint x="366.0" y="160.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="creator" targetElement="_5">
+        <omgdi:waypoint x="575.0" y="100.0"/>
+        <omgdi:waypoint x="400.0" y="100.0"/>
+        <omgdi:waypoint x="400.0" y="160.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="_5" targetElement="isManager">
+        <omgdi:waypoint x="400.0" y="187.5"/>
+        <omgdi:waypoint x="515.0" y="221.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_20" id="BPMNEdge__20" sourceElement="领导是否同意" targetElement="creator">
+        <omgdi:waypoint x="542.0" y="436.0"/>
+        <omgdi:waypoint x="625.0" y="275.0"/>
+        <omgdi:waypoint x="625.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="_6" targetElement="领导是否同意">
+        <omgdi:waypoint x="345.0" y="380.0"/>
+        <omgdi:waypoint x="345.0" y="410.0"/>
+        <omgdi:waypoint x="510.0" y="436.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_21" id="BPMNEdge__21" sourceElement="领导是否同意" targetElement="boss">
+        <omgdi:waypoint x="525.0" y="451.0"/>
+        <omgdi:waypoint x="525.0" y="525.0"/>
+        <omgdi:waypoint x="415.0" y="577.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_10" id="BPMNEdge__10" sourceElement="isManager" targetElement="_6">
+        <omgdi:waypoint x="530.0" y="236.0"/>
+        <omgdi:waypoint x="530.0" y="299.0"/>
+        <omgdi:waypoint x="390.0" y="352.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="23.0" width="2.0" x="0.0" y="-10.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,35 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: activity-demo
+
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      #activiti数据库url必须指定servertimezone
+      url: jdbc:mysql://localhost:3306/activitiDB?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Hongkong
+      username: root
+      password: root
+      initial-size: 5        #初始连接数
+      max-active: 10         #最大活跃连接数
+      min-idle: 5            #最小连接数
+      max-wait: 60000        #连接时最大等待时间，单位:毫秒
+      pool-prepared-statements: true          #是否开启PSCache，PSCache对支持游标的数据库性能提升巨大，oracle建议开启，mysql下建议关闭
+      max-pool-prepared-statement-per-connection-size: 20          #指定每个连接上PSCache的大小
+      validation-query: SELECT 1 FROM DUAL           #测试连接
+      validation-query-timeout: 60000               #测试连接超时
+      test-on-borrow: false                          #获取连接时执行检测，建议关闭，影响性能
+      test-on-return: false                          #归还连接时执行检测，建议关闭，影响性能
+      test-while-idle: true                          #申请连接的时候检测，建议配置为true，不影响性能，并且保证安全性
+      time-between-eviction-runs-millis: 60000     #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      min-evictable-idle-time-millis: 100000       #配置一个连接在池中最小生存的时间，单位是毫秒
+      filters: stat                       #配置扩展插件，常用的插件有=>stat:监控统计  log4j/slf4:日志  wall:防御sql注入,不配wall，会阻塞alter语句
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000 #通过connectProperties属性来打开mergeSql功能;慢SQL记录
+  activiti:
+    database-schema-update: true  #activiti自动建表策略：true为自动创建
+    check-process-definitions: false  #是否检查流程定义文件自动部署，false为不检查
+server:
+  port: 8080
+debug: true
+
